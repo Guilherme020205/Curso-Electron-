@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const text = document.getElementById("text")
 
     button.addEventListener("click", async () => {
-        const username = await window.api.getName();
+        const username = await window.api.getName("Guilherme Seemann");
         // console.log(username)
         text.innerHTML = username
     })

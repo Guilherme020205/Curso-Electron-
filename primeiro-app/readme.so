@@ -1,0 +1,53 @@
+1. main.js - O Processo Principal (Main Process)
+O arquivo main.js é responsável pelo processo principal do Electron. O processo principal gerencia a janela da aplicação, inicializa o Electron e lida com as funcionalidades de baixo nível, como a comunicação entre a janela (processo de renderização) e o sistema operacional.
+
+O que ele faz no seu código:
+Criando a janela: Ele usa BrowserWindow para criar a janela da aplicação.
+
+Carregando o HTML: Carrega o arquivo index.html para ser exibido na janela.
+
+Configurando o preload.js: Ele define o arquivo preload.js como a configuração do webPreferences.preload para que o código do renderer possa acessar a API exposta através do preload.js.
+
+Lidando com IPC (Inter-Process Communication): No seu código, o ipcMain (processo principal) responde a dois eventos:
+
+"ping": Retorna uma resposta de "pong, pong".
+
+"username": Retorna o nome do usuário "Guilherme".
+
+O código no main.js é responsável por manter o processo principal em execução e criar as janelas quando necessário.
+
+2. preload.js - A Ponte de Comunicação Segura
+O preload.js serve como uma camada de segurança entre o processo de renderização (o que roda no navegador, no lado da janela) e o processo principal. Ele usa o contextBridge para expor funções de forma segura ao ambiente de renderização sem permitir acesso direto ao Node.js ou APIs sensíveis do Electron.
+
+O que ele faz no seu código:
+Exposição de APIs: O preload.js usa o contextBridge para expor duas funções seguras para o processo de renderização através do objeto window.api:
+
+ping(): Faz uma chamada ao processo principal para obter uma resposta do evento "ping".
+
+getName(): Faz uma chamada ao processo principal para obter o nome de usuário através do evento "username".
+
+Isso mantém a comunicação entre os processos separada e segura, evitando que o código no processo de renderização tenha acesso direto a funcionalidades críticas do Electron ou do sistema operacional.
+
+3. renderer.js - O Processo de Renderização (Renderer Process)
+O renderer.js é o arquivo responsável pelo código executado no processo de renderização, ou seja, no lado da interface do usuário (navegador). Esse código interage com o HTML, manipulando o DOM e fazendo chamadas para o processo principal através da API exposta pelo preload.js.
+
+O que ele faz no seu código:
+Função teste(): Essa função faz uma chamada assíncrona usando window.api.ping() para comunicar com o processo principal e receber a resposta "pong, pong". No seu exemplo, isso é feito imediatamente quando o arquivo renderer.js é carregado.
+
+Interação com o DOM: Após o carregamento do conteúdo da página (DOMContentLoaded), ele adiciona um ouvinte de eventos ao botão. Quando o botão é clicado, ele faz uma chamada ao processo principal para pegar o nome do usuário (window.api.getName()) e atualiza o conteúdo da página com o nome de usuário obtido.
+
+Fluxo de Interação
+Abertura da janela: O processo principal (main.js) cria a janela do navegador e carrega index.html.
+
+Carregamento do Preload: O preload.js é carregado e expõe funções seguras para o processo de renderização.
+
+Execução do Renderer: O código em renderer.js começa a ser executado quando a página é carregada, e ele pode interagir com a UI. Quando o usuário clica no botão, ele chama a API exposta pelo preload.js para comunicar-se com o processo principal e obter o nome do usuário.
+
+Comunicação com o Main Process: O main.js recebe a chamada do renderer através do ipcMain e responde com as informações apropriadas (como o nome de usuário).
+
+Resumo do Fluxo:
+Main Process: Gerencia a janela da aplicação, interage com o sistema operacional e define as funcionalidades do preload.js.
+
+Preload Process: Serve como uma camada de segurança, expondo APIs do processo principal para o processo de renderização de forma controlada.
+
+Renderer Process: Manipula a interface do usuário e interage com o código de backend (processo principal) através do IPC seguro.
