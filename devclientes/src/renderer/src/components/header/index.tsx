@@ -2,10 +2,14 @@ import * as Collapsible from '@radix-ui/react-collapsible'
 import clsx from 'clsx'
 import { CaretRight } from 'phosphor-react'
 
-export function Header() {
+interface HeaderProops{
+  isSidebarOpen: Boolean
+}
+
+export function Header({isSidebarOpen}: HeaderProops) {
 
   const isMacOs = process.platform === 'darwin';
-  const isSidebarOpen = false;
+  
 
   return (
     <div id='header'
