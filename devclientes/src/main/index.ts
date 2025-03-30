@@ -8,7 +8,7 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
-    // alwaysOnTop: true, // não minimiza a tela
+    alwaysOnTop: true, // não minimiza a tela
     show: true,
     autoHideMenuBar: true,
     backgroundColor: "#030712",
