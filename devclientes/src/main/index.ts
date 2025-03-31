@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import path, { join } from 'node:path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { createFileRoute, createURLRoute } from 'electron-router-dom'
+import { createTray } from './tray'
 
 function createWindow(): void {
   // Create the browser window.
@@ -12,22 +13,25 @@ function createWindow(): void {
     show: true,
     autoHideMenuBar: true,
     backgroundColor: "#030712",
-    ...(process.platform === 'linux' ? { 
-      icon:  path.join(__dirname, "../../build/icon.png")
-     } :  process.platform === 'win32' && {
+    ...(process.platform === 'linux' ? {
+      icon: path.join(__dirname, "../../build/icon.png")
+    } : process.platform === 'win32' && {
       icon: path.join(__dirname, "resources", "icon.png")
-     }),
+    }),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
 
+  // Chamar para exibir o tray
+  createTray(mainWindow)
+
   // Muda icon para mac
 
-  if(process.platform === 'darwin'){
+  if (process.platform === 'darwin') {
     const iconPath = path.resolve(__dirname, "resources", "icon.png")
-    app.dock?.setIcon(iconPath) 
+    app.dock?.setIcon(iconPath)
   }
 
   mainWindow.on('ready-to-show', () => {
@@ -42,9 +46,9 @@ function createWindow(): void {
   const devServerURL = createURLRoute(process.env['ELECTRON_RENDERER_URL']!, 'main')
 
   const fileRoute = createFileRoute(
-    join(__dirname, '../renderer/index.html' ),
+    join(__dirname, '../renderer/index.html'),
     'main'
-  )  
+  )
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
