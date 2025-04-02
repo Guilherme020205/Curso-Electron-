@@ -9,7 +9,6 @@ interface HeaderProops{
 export function Header({isSidebarOpen}: HeaderProops) {
 
   const isMacOs = process.platform === 'darwin';
-  
 
   return (
     <div id='header'

@@ -5,6 +5,7 @@ import fs from "fs";
 
 import { Customer, NewCustomer } from '../shared/types/ipc'
 import { randomUUID } from "crypto";
+import { error } from "console";
 
 // Determinar o caminho base para o banco de dados com base no sistema operacional
 let dbPath;
@@ -44,4 +45,55 @@ async function addCustomer(doc: NewCustomer): Promise<PouchDB.Core.Response | vo
 ipcMain.handle("add-customer", async (event, doc: Customer) => {
     const result = await addCustomer(doc);
     return result;
+})
+
+// função buscar todos os clientes
+
+async function fectAllCustoemers(): Promise<Customer[]> {
+    try {
+        const result = await db.allDocs({ include_docs: true })
+        return result.rows.map(row => row.doc as Customer)
+    } catch (error) {
+        console.log("Erro para buscar", error)
+        return []
+    }
+}
+
+ipcMain.handle('fetch-all-customers', async () => {
+    return await fectAllCustoemers();
+})
+
+// Busca cliente pelo id
+
+async function fectCustoemersById(docId: string) {
+    return db.get(docId)
+        .then(doc => doc)
+        .catch(error => {
+            console.log("Error ao buscar", error)
+            return null;
+        })
+
+}
+
+ipcMain.handle("fetch-customer-id", async (event, docId) => {
+    const result = await fectCustoemersById(docId)
+    return result;
+})
+
+// Deletando cliente pelo id
+
+async function deleteCustomer(docId: string): Promise<PouchDB.Core.Response | null> {
+    try {
+        const doc = await db.get(docId);
+        const result = await db.remove(doc._id, doc._rev)
+        return result;
+
+    } catch (error) {
+        console.log("Erro para deletar", error)
+        return null
+    }
+}
+
+ipcMain.handle("delete-customer", async (event, docId: string): Promise<PouchDB.Core.Response | null> => {
+    return await deleteCustomer(docId)
 })

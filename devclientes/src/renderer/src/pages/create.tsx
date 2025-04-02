@@ -3,11 +3,11 @@ export function Create(){
     async function handleAddCustomer() {
 
         const doc = {
-            name: "Guilherme",
-            email: "gui@gmail.com",
-            phone: "999999999",
-            address: "Rua x centro",
-            role: "Dev front-end",
+            name: "jlljljljllherme",
+            email: "jlljljljl@gmail.com",
+            phone: "444444444",
+            address: "Rua x sfsdcentro",
+            role: "Dev front-edddddddnd",
             status: true
         }
 
