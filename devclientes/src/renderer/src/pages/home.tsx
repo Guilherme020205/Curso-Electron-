@@ -9,7 +9,7 @@ export function Home() {
     queryKey: ['customers'],
     queryFn: async () => {
       const response = await window.api.fetchAllCustomers()
-      console.log(response)
+      // console.log(response)
       return response
     }
   })
