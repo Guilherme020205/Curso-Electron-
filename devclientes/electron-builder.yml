@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.sujeitoguilherme.app
 productName: devclientes
 directories:
   buildResources: build
@@ -30,10 +30,13 @@ dmg:
   artifactName: ${name}-${version}.${ext}
 linux:
   target:
-    - AppImage
-    - snap
+    - AppImage 
     - deb
+    - rpm
+    - freebsd
+    - pacman
   maintainer: electronjs.org
+  synopsis: ${description}
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
